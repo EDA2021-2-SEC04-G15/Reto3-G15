@@ -34,12 +34,23 @@ se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
 
-def printMenu():
-    print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- ")
+UFOfile = 'UFOS-utf8-small.csv'
+cont = None
 
-catalog = None
+def printMenu():
+    print("\n")
+    print("*******************************************")
+    print("Bienvenido")
+    print("1- Inicializar Analizador")
+    print("2- Cargar información de avistamientos")
+    print("3- Consultar avisatamientos en una ciudad")
+    print("4- Consultar avistamientos por duracion")
+    print("5- Consultar avistamientos por hora/min")
+    print("6- Consultar avistamientos en un rango de fechas")
+    print("7- Contar avistamientos en una zona geografica")
+    print("0- Salir")
+    print("*******************************************")
+
 
 """
 Menu principal
@@ -47,11 +58,27 @@ Menu principal
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
+
     if int(inputs[0]) == 1:
-        print("Cargando información de los archivos ....")
+        print("\nInicializando....")
+        # cont es el controlador que se usará de acá en adelante
+        cont = controller.init()
 
     elif int(inputs[0]) == 2:
-        pass
+        print("\nCargando información de avistamientos ....")
+        controller.loadData(cont, UFOfile)
+        print('UFOs cargados: ' + str(controller.UFOsSize(cont)))
+        print("\nPrimeros 5 avistamientos: ") 
+        controller.printFirstTotals(cont)
+        print("\nUltimos 5 avistamientos: ") 
+        controller.printLastTotals(cont)
+
+    elif int(inputs[0]) == 3:
+        print('Altura del arbol: ' + str(controller.indexHeight(cont)))
+        print('Elementos en el arbol: ' + str(controller.indexSize(cont)))
+        print('Menor Llave: ' + str(controller.minKey(cont)))
+        print('Mayor Llave: ' + str(controller.maxKey(cont)))
+
 
     else:
         sys.exit(0)
