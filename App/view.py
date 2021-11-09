@@ -74,8 +74,12 @@ while True:
         controller.printLastTotals(cont)
 
     elif int(inputs[0]) == 3:
-        print('Altura del arbol: ' + str(controller.indexHeight(cont)))
-        print('Elementos en el arbol: ' + str(controller.indexSize(cont)))
+        print('Se econtraron ' + str(controller.indexSize(cont['cityIndex'])) + ' ciudades con avistamientos')
+        print('Menor Llave: ' + str(controller.minKey(cont)))
+        print('Mayor Llave: ' + str(controller.maxKey(cont)))
+
+    elif int(inputs[0]) == 4:
+        print('Elementos en el arbol: ' + str(controller.indexSize(cont['durationIndex'])))
         print('Menor Llave: ' + str(controller.minKey(cont)))
         print('Mayor Llave: ' + str(controller.maxKey(cont)))
 

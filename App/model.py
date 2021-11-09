@@ -56,6 +56,9 @@ def newAnalyzer():
     analyzer['avistamientos'] = lt.newList('ARRAY_LIST', compareDates)
     analyzer['cityIndex'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareCities)
+    analyzer['durationIndex'] = om.newMap(omaptype='RBT',
+                                      comparefunction=compareTimes)
+    
     return analyzer
 
 # Funciones para agregar informacion al catalogo
@@ -65,7 +68,27 @@ def addUFO(analyzer, UFO):
     """
     lt.addLast(analyzer['avistamientos'], UFO)
     updateCityIndex(analyzer['cityIndex'], UFO)
+    updateDurationIndex(analyzer['durationIndex'],UFO)
     return analyzer
+
+def updateDurationIndex(map, UFO):
+    """
+    Se toma la ciudad del avistamiento y se busca si ya existe en el arbol
+    dicha ciudad.  Si es asi, se adiciona a su lista de avistamientos
+    y se actualiza ...
+
+    Si no se encuentra creado un nodo para esa ciudad en el arbol
+    se crea y se actualiza ...
+    """
+    duration = UFO['duration (seconds)']
+    entry = om.get(map, duration)
+    if entry is None:
+        durationentry = newDataEntry(UFO)
+        om.put(map, duration, durationentry)
+    else:
+        durationentry = me.getValue(entry)
+        addCityIndex(durationentry, UFO)
+    return map
 
 
 def updateCityIndex(map, UFO):
@@ -92,16 +115,18 @@ def newDataEntry(UFO):
     Crea una entrada en el indice por ciudades, es decir en el arbol
     binario.
     """
-    entry = {'lstUFOs': None}
+    entry = {'lstUFOs': None, 'count':0}
     entry['lstUFOs'] = lt.newList('ARRAY_LIST', compareDates)
     lst = entry['lstUFOs']
     lt.addLast(lst, UFO)
+    entry['count']+= 1
     return entry
 
 def addCityIndex(cityentry, UFO):
     
     lst = cityentry['lstUFOs']
     lt.addLast(lst, UFO)
+    cityentry['count']+= 1
     return cityentry
 
 
@@ -120,7 +145,7 @@ def indexSize(analyzer):
     """
     Numero de elementos en el indice
     """
-    return om.size(analyzer['cityIndex'])
+    return om.size(analyzer)
 
 
 def minKey(analyzer):
@@ -156,6 +181,20 @@ def compareCities(city1, city2):
     if (city1 == city2):
         return 0
     elif city1 > city2:
+        return 1
+    else:
+        return -1
+
+def compareTimes(duration1, duration2):
+    """
+    Compara dos ciudades
+    """
+    t1 = float(duration1)
+    t2 = float(duration2)
+
+    if (t1 == t2):
+        return 0
+    elif t1 > t2:
         return 1
     else:
         return -1
