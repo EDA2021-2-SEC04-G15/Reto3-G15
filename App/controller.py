@@ -94,27 +94,31 @@ def printLastTotals(analyzer):
 def printFirst3(list):
     i=1
     while i in range (1,4):
-        avistamiento = lt.getElement(list,i)
-        print('\n###########\nFecha: ' + avistamiento['datetime'] +
-            ", Ciudad: " + avistamiento['city'] +
-            ', Pais: ' + avistamiento['country']+
-            ', Forma: '+ avistamiento['shape']+
-            ', Duracion(segundos): '+avistamiento['duration (seconds)'])
-        i+=1
-    pass
+        try:
+            avistamiento = lt.getElement(list,i)
+            print('\n###########\nFecha: ' + avistamiento['datetime'] +
+                ", Ciudad: " + avistamiento['city'] +
+                ', Pais: ' + avistamiento['country']+
+                ', Forma: '+ avistamiento['shape']+
+                ', Duracion(segundos): '+avistamiento['duration (seconds)'])
+            i+=1
+        except: 
+            i+=1
 
 def printLast3(list):
     totals = int(lt.size(list))
     k = totals-2
     while k in range (totals-2, totals+1):
-        avistamiento = lt.getElement(list,k)
-        print('\n###########\nFecha: ' + avistamiento['datetime'] +
-            ", Ciudad: " + avistamiento['city'] +
-            ', Pais: ' + avistamiento['country']+
-            ', Forma: '+ avistamiento['shape']+
-            ', Duracion(segundos): '+avistamiento['duration (seconds)'])
-        k+=1
-    pass
+        try:
+            avistamiento = lt.getElement(list,k)
+            print('\n###########\nFecha: ' + avistamiento['datetime'] +
+                ", Ciudad: " + avistamiento['city'] +
+                ', Pais: ' + avistamiento['country']+
+                ', Forma: '+ avistamiento['shape']+
+                ', Duracion(segundos): '+avistamiento['duration (seconds)'])
+            k+=1
+        except:
+            break
 
 def indexHeight(analyzer):
     """
@@ -151,6 +155,10 @@ def findMax(analyzer):
 
     return model.findMax(analyzer)
 
+def findMaxCity(analyzer):
+
+    return model.findMaxCity(analyzer)
+
 def searchByDateRange(cont, fecha1, fecha2):
 
     result = model.searchByDateRange(cont, fecha1, fecha2)
@@ -160,5 +168,11 @@ def searchByDateRange(cont, fecha1, fecha2):
 def searchByDurationRange(cont, duration1, duration2):
 
     result = model.searchByDurationRange(cont, duration1, duration2)
+
+    return result
+
+def searchByCity(cont, city):
+
+    result = model.searchByCity(cont,city)
 
     return result

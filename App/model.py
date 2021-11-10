@@ -208,6 +208,22 @@ def findMax(analyzer):
 
     return maxKey, contador
 
+def findMaxCity(analyzer):
+    cityValues = om.valueSet(analyzer)
+    orderCity = om.newMap(omaptype='RBT',
+                                      comparefunction=compareDates)
+    for city in lt.iterator(cityValues):
+        cont = city['count']
+        k= lt.firstElement(city['lstUFOs'])
+        om.put(orderCity, cont, k)
+    
+    maxKey = om.maxKey(orderCity)
+    maxEntry = om.get(orderCity,maxKey)
+    maxValue = maxEntry['value']
+    maxCity = maxValue['city']
+
+    return maxCity, maxKey
+
 def searchByDateRange(cont, fecha1, fecha2):
 
     datetm1 = datetime.datetime.strptime(fecha1, '%Y-%m-%d')
@@ -255,6 +271,29 @@ def searchByDurationRange(cont, duration1, duration2):
     return counter, lstEntry
 
 
+def searchByCity(cont, city):
+    lstEntry = lt.newList('ARRAY_LIST')
+    cityInfo = om.get(cont, city)
+    cityValues = cityInfo['value']
+    cityOrdered = om.newMap(omaptype='RBT',
+                                      comparefunction=compareDates)
+    for event in lt.iterator(cityValues['lstUFOs']):
+        datetm= event['datetime']
+        entry = om.get(cityOrdered, datetm)
+        if entry is None:
+            datentry = newDataEntry(event)
+            om.put(cityOrdered, datetm, datentry)
+        else:
+            datentry = me.getValue(entry)
+            addCityIndex(datentry, event)
+    
+    dates = om.valueSet(cityOrdered)
+    for dt in lt.iterator(dates):
+        for event2 in lt.iterator(dt['lstUFOs']):        
+            lt.addLast(lstEntry,event2)
+
+    return cityValues['count'],lstEntry
+
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 def compareDates(date1, date2):
@@ -293,16 +332,5 @@ def compareDurations(duration1, duration2):
     else:
         return -1
 
-def compareDates(date1, date2):
-    """
-    Compara dos ciudades
-    """
-
-    if (date1 == date2):
-        return 0
-    elif date1 > date2:
-        return 1
-    else:
-        return -1
 
 # Funciones de ordenamiento

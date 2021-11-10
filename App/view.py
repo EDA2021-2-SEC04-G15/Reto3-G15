@@ -74,17 +74,25 @@ while True:
         controller.printLastTotals(cont)
 
     elif int(inputs[0]) == 3:
-        print('Se econtraron ' + str(controller.indexSize(cont['cityIndex'])) + ' ciudades con avistamientos')
-        print('Menor Llave: ' + str(controller.minKey(cont['cityIndex'])))
-        print('Mayor Llave: ' + str(controller.maxKey(cont['cityIndex'])))
+        ciudad = input('Ciudad a buscar: ')
+        print('\nSe encontraron ' + str(controller.indexSize(cont['cityIndex'])) + ' ciudades con avistamientos')
+        min = controller.findMaxCity(cont['cityIndex'])
+        print('La ciudad con mas avistamientos fue: ' + str(min[0]))
+        print('Numero de avistamientos en esa ciudad: ' + str(min[1]))
+        result = controller.searchByCity(cont['cityIndex'], ciudad)
+        print('\nSe encontraron ' + str(result[0]) + ' avistamientos en ' + ciudad)
+        print('\nPimeros 3 avistamientos:')
+        controller.printFirst3(result[1])
+        print('\nUltimos 3 avistamientos:')
+        controller.printLast3(result[1])
 
     elif int(inputs[0]) == 4:
         duracion1 = input('Duracion minima (segundos) : ')
         duracion2 = input('Duracion maxima (segundos) : ')
         print('\nSe encontraron ' + str(controller.indexSize(cont['durationIndex'])) + ' avistamientos con distintas duraciones')
         min = controller.findMax(cont['durationIndex'])
-        print('La duracion de avistamiento mas larga fue: ' + str(min[0]))
-        print('Numero de avistamientos en esta duracion : ' + str(min[1]))
+        print('El avisamiento de mayor duracion duro: ' + str(min[0]))
+        print('Numero de avistamientos con esta duracion : ' + str(min[1]))
         result = controller.searchByDurationRange(cont['durationIndex'], duracion1, duracion2)
 
         print('\nSe encontraron ' + str(result[0]) + ' avistamientos en el rango de duraciones')
