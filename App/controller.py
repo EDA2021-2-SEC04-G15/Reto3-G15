@@ -105,7 +105,7 @@ def printFirst3(list):
 
 def printLast3(list):
     totals = int(lt.size(list))
-    k = totals
+    k = totals-2
     while k in range (totals-2, totals+1):
         avistamiento = lt.getElement(list,k)
         print('\n###########\nFecha: ' + avistamiento['datetime'] +
@@ -113,7 +113,7 @@ def printLast3(list):
             ', Pais: ' + avistamiento['country']+
             ', Forma: '+ avistamiento['shape']+
             ', Duracion(segundos): '+avistamiento['duration (seconds)'])
-        k-=1
+        k+=1
     pass
 
 def indexHeight(analyzer):
@@ -137,14 +137,28 @@ def minKey(analyzer):
     return model.minKey(analyzer)
 
 
+def findMin(analyzer):
+
+    return model.findMin(analyzer)
+
 def maxKey(analyzer):
     """
     La mayor llave del arbol
     """
     return model.maxKey(analyzer)
 
+def findMax(analyzer):
+
+    return model.findMax(analyzer)
+
 def searchByDateRange(cont, fecha1, fecha2):
 
     result = model.searchByDateRange(cont, fecha1, fecha2)
+
+    return result
+
+def searchByDurationRange(cont, duration1, duration2):
+
+    result = model.searchByDurationRange(cont, duration1, duration2)
 
     return result

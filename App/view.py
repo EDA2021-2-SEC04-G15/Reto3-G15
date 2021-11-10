@@ -79,9 +79,19 @@ while True:
         print('Mayor Llave: ' + str(controller.maxKey(cont['cityIndex'])))
 
     elif int(inputs[0]) == 4:
-        print('Elementos en el arbol: ' + str(controller.indexSize(cont['durationIndex'])))
-        print('Menor Llave: ' + str(controller.minKey(cont['durationIndex'])))
-        print('Mayor Llave: ' + str(controller.maxKey(cont['durationIndex'])))
+        duracion1 = input('Duracion minima (segundos) : ')
+        duracion2 = input('Duracion maxima (segundos) : ')
+        print('\nSe encontraron ' + str(controller.indexSize(cont['durationIndex'])) + ' avistamientos con distintas duraciones')
+        min = controller.findMax(cont['durationIndex'])
+        print('La duracion de avistamiento mas larga fue: ' + str(min[0]))
+        print('Numero de avistamientos en esta duracion : ' + str(min[1]))
+        result = controller.searchByDurationRange(cont['durationIndex'], duracion1, duracion2)
+
+        print('\nSe encontraron ' + str(result[0]) + ' avistamientos en el rango de duraciones')
+        print('\n3 avistamientos mas largos:')
+        controller.printFirst3(result[1])
+        print('\n3 avistamientos mas cortos:')
+        controller.printLast3(result[1])
 
     elif int(inputs[0]) == 5:
         print('Elementos en el arbol: ' + str(controller.indexSize(cont['durationIndex'])))
@@ -92,8 +102,9 @@ while True:
         fecha1 = input('Fecha minima de busqueda (AAAA-MM-DD) : ')
         fecha2 = input('Fecha maxima de busqueda (AAAA-MM-DD) : ')
         print('\nSe encontraron ' + str(controller.indexSize(cont['dateIndex'])) + ' avistamientos con distintas fechas')
-        print('Menor Llave: ' + str(controller.minKey(cont['dateIndex'])))
-        print('Mayor Llave: ' + str(controller.maxKey(cont['dateIndex'])))
+        min = controller.findMin(cont['dateIndex'])
+        print('La fecha de avistamiento mas antiguo fue en: ' + str(min[0]))
+        print('Numero de avistamientos en esa fecha : ' + str(min[1]))
         result = controller.searchByDateRange(cont['dateIndex'], fecha1, fecha2)
 
         print('\nSe encontraron ' + str(result[0]) + ' avistamientos en el rango')
@@ -101,7 +112,6 @@ while True:
         controller.printFirst3(result[1])
         print('\nUltimos 3 avistamientos:')
         controller.printLast3(result[1])
-
 
     else:
         sys.exit(0)

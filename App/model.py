@@ -183,11 +183,30 @@ def minKey(analyzer):
     return om.minKey(analyzer)
 
 
+def findMin(analyzer):
+
+    minKey = om.minKey(analyzer)
+    minEntry = om.get(analyzer,minKey)
+    minValue = minEntry['value']
+    contador = minValue['count']
+
+    return minKey, contador
+
+
 def maxKey(analyzer):
     """
     Llave mas grande
     """
     return om.maxKey(analyzer)
+
+def findMax(analyzer):
+
+    maxKey = om.maxKey(analyzer)
+    maxEntry = om.get(analyzer,maxKey)
+    maxValue = maxEntry['value']
+    contador = maxValue['count']
+
+    return maxKey, contador
 
 def searchByDateRange(cont, fecha1, fecha2):
 
@@ -202,6 +221,36 @@ def searchByDateRange(cont, fecha1, fecha2):
         counter += lstvalues['count']
         for event in lt.iterator(lstvalues['lstUFOs']):
             lt.addLast(lstEntry,event)
+
+    return counter, lstEntry
+
+def searchByDurationRange(cont, duration1, duration2):
+
+    values = om.values(cont, duration1, duration2)
+    counter = 0
+    lstEntry = lt.newList('ARRAY_LIST')
+    for lstvalues in lt.iterator(values):
+
+        counter += lstvalues['count']
+        mapByLocation = om.newMap(omaptype='RBT',
+                                      comparefunction=compareCities)
+
+        for event in lt.iterator(lstvalues['lstUFOs']):
+            country= event['country']
+            city= event['city']
+            countryCity= city +'-'+country
+            entry = om.get(mapByLocation, countryCity)
+            if entry is None:
+                countryentry = newDataEntry(event)
+                om.put(mapByLocation, countryCity, countryentry)
+            else:
+                countryentry = me.getValue(entry)
+                addCityIndex(countryentry, event)
+            
+        countrycities = om.valueSet(mapByLocation)
+        for cou in lt.iterator(countrycities):
+            for event2 in lt.iterator(cou['lstUFOs']):        
+                lt.addLast(lstEntry,event2)
 
     return counter, lstEntry
 
@@ -257,12 +306,3 @@ def compareDates(date1, date2):
         return -1
 
 # Funciones de ordenamiento
-
-date1 = '2003-03-29 22:30:00'
-processDate1= datetime.datetime.strptime(date1, '%Y-%m-%d %H:%M:%S')
-date2 = '2005-03-29 22:30:00'
-processDate2= datetime.datetime.strptime(date2, '%Y-%m-%d %H:%M:%S')
-
-res = processDate1.date() > processDate2.date()
-
-print(res)
