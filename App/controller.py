@@ -120,6 +120,39 @@ def printLast3(list):
         except:
             break
 
+def printFirst5(list):
+    i=1
+    while i in range (1,6):
+        try:
+            avistamiento = lt.getElement(list,i)
+            print('\n###########\nFecha: ' + avistamiento['datetime'] +
+                ", Ciudad: " + avistamiento['city'] +
+                ', Pais: ' + avistamiento['country']+
+                ', Forma: '+ avistamiento['shape']+
+                ', Duracion(segundos): '+avistamiento['duration (seconds)']+
+                ', longitud: '+ avistamiento['longitude']+
+                ', latitud: '+ avistamiento['latitude'])
+            i+=1
+        except: 
+            i+=1
+
+def printLast5(list):
+    totals = int(lt.size(list))
+    k = totals-4
+    while k in range (totals-4, totals+1):
+        try:
+            avistamiento = lt.getElement(list,k)
+            print('\n###########\nFecha: ' + avistamiento['datetime'] +
+                ", Ciudad: " + avistamiento['city'] +
+                ', Pais: ' + avistamiento['country']+
+                ', Forma: '+ avistamiento['shape']+
+                ', Duracion(segundos): '+avistamiento['duration (seconds)']+
+                ', longitud: '+ avistamiento['longitude']+
+                ', latitud: '+ avistamiento['latitude'])
+            k+=1
+        except:
+            break
+
 def indexHeight(analyzer):
     """
     Altura del indice (arbol)
@@ -174,5 +207,11 @@ def searchByDurationRange(cont, duration1, duration2):
 def searchByCity(cont, city):
 
     result = model.searchByCity(cont,city)
+
+    return result
+
+def searchByLocation(cont, longitud_min, longitud_max, latitud_min, latitud_max):
+
+    result = model.searchByLocation(cont, longitud_min, longitud_max, latitud_min, latitud_max)
 
     return result

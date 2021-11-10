@@ -96,9 +96,9 @@ while True:
         result = controller.searchByDurationRange(cont['durationIndex'], duracion1, duracion2)
 
         print('\nSe encontraron ' + str(result[0]) + ' avistamientos en el rango de duraciones')
-        print('\n3 avistamientos mas largos:')
-        controller.printFirst3(result[1])
         print('\n3 avistamientos mas cortos:')
+        controller.printFirst3(result[1])
+        print('\n3 avistamientos mas largos:')
         controller.printLast3(result[1])
 
     elif int(inputs[0]) == 5:
@@ -120,6 +120,20 @@ while True:
         controller.printFirst3(result[1])
         print('\nUltimos 3 avistamientos:')
         controller.printLast3(result[1])
+
+    elif int(inputs[0]) == 7:
+        longitud_min = input('Longitud minima: ')
+        longitud_max = input('Longitud maxima: ')
+        latitud_min = input('Latitud minima: ')
+        latitud_max = input('Latitud maxima: ')
+
+        result = controller.searchByLocation(cont['latitudeIndex'], longitud_min, longitud_max, latitud_min, latitud_max)
+
+        print('\nSe encontraron ' + str(result[0]) + ' avistamientos en el area de busqueda')
+        print('\nPimeros 5 avistamientos:')
+        controller.printFirst5(result[1])
+        print('\nUltimos 5 avistamientos:')
+        controller.printLast5(result[1])
 
     else:
         sys.exit(0)

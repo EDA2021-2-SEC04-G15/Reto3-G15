@@ -61,6 +61,8 @@ def newAnalyzer():
                                       comparefunction=compareDurations)
     analyzer['dateIndex'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareDates)
+    analyzer['latitudeIndex'] = om.newMap(omaptype='RBT',
+                                      comparefunction=compareCoordinate)
     
     return analyzer
 
@@ -73,7 +75,28 @@ def addUFO(analyzer, UFO):
     updateCityIndex(analyzer['cityIndex'], UFO)
     updateDurationIndex(analyzer['durationIndex'],UFO)
     updateDatesIndex(analyzer['dateIndex'], UFO)
+    updateLongitudeIndex(analyzer['latitudeIndex'], UFO)
     return analyzer
+
+def updateLongitudeIndex(map, UFO):
+    """
+    Se toma la ciudad del avistamiento y se busca si ya existe en el arbol
+    dicha ciudad.  Si es asi, se adiciona a su lista de avistamientos
+    y se actualiza ...
+
+    Si no se encuentra creado un nodo para esa ciudad en el arbol
+    se crea y se actualiza ...
+    """
+    longitude_input = UFO['latitude']
+    longitude_1= float(longitude_input).__round__(2)
+    entry = om.get(map, longitude_1)
+    if entry is None:
+        longitudeEntry = newDataEntry(UFO)
+        om.put(map, longitude_1, longitudeEntry)
+    else:
+        longitudeEntry = me.getValue(entry)
+        addCityIndex(longitudeEntry, UFO)
+    return map
 
 def updateDatesIndex(map, UFO):
     """
@@ -294,6 +317,43 @@ def searchByCity(cont, city):
 
     return cityValues['count'],lstEntry
 
+def searchByLocation(cont, longitud_min, longitud_max, latitud_min, latitud_max):
+    longitud_max=float(longitud_max)
+    longitud_min=float(longitud_min)
+    latitud_min=float(latitud_min)
+    latitud_max=float(latitud_max)
+    values = om.values(cont, latitud_min, latitud_max)
+    counter = 0
+    lstEntry = lt.newList('ARRAY_LIST')
+    for lstvalues in lt.iterator(values):
+        
+        LongitudeOrd = om.newMap(omaptype='RBT',
+                                      comparefunction=compareCoordinate)
+
+        for event in lt.iterator(lstvalues['lstUFOs']):
+            latitude_input= event['longitude']
+            latitude_1 = float(latitude_input).__round__(2)
+            entry = om.get(LongitudeOrd, latitude_1)
+            if entry is None:
+                latitudeEntry = newDataEntry(event)
+                om.put(LongitudeOrd, latitude_1, latitudeEntry)
+            else:
+                latitudeEntry = me.getValue(entry)
+                addCityIndex(latitudeEntry, event)
+
+        double_filtered_values = om.values(LongitudeOrd, longitud_min, longitud_max)
+
+        for lstvalues2 in lt.iterator(double_filtered_values):
+            for event2 in lt.iterator(lstvalues2['lstUFOs']):        
+                lt.addLast(lstEntry,event2)
+                counter +=1
+
+    return counter, lstEntry
+
+
+
+    pass
+
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 def compareDates(date1, date2):
@@ -332,5 +392,15 @@ def compareDurations(duration1, duration2):
     else:
         return -1
 
+def compareCoordinate(coord1, coord2):
+    """
+    Compara dos fechas
+    """
+    if (coord1 == coord2):
+        return 0
+    elif (coord1 > coord2):
+        return 1
+    else:
+        return -1
 
 # Funciones de ordenamiento
