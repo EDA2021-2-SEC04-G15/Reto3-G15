@@ -26,6 +26,7 @@
 
 
 import config as cf
+import datetime
 from DISClib.ADT import list as lt
 from DISClib.ADT import orderedmap as om
 from DISClib.ADT import map as mp
@@ -57,7 +58,9 @@ def newAnalyzer():
     analyzer['cityIndex'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareCities)
     analyzer['durationIndex'] = om.newMap(omaptype='RBT',
-                                      comparefunction=compareTimes)
+                                      comparefunction=compareDurations)
+    analyzer['dateIndex'] = om.newMap(omaptype='RBT',
+                                      comparefunction=compareDates)
     
     return analyzer
 
@@ -69,7 +72,32 @@ def addUFO(analyzer, UFO):
     lt.addLast(analyzer['avistamientos'], UFO)
     updateCityIndex(analyzer['cityIndex'], UFO)
     updateDurationIndex(analyzer['durationIndex'],UFO)
+    updateDatesIndex(analyzer['dateIndex'], UFO)
     return analyzer
+
+def updateDatesIndex(map, UFO):
+    """
+    Se toma la ciudad del avistamiento y se busca si ya existe en el arbol
+    dicha ciudad.  Si es asi, se adiciona a su lista de avistamientos
+    y se actualiza ...
+
+    Si no se encuentra creado un nodo para esa ciudad en el arbol
+    se crea y se actualiza ...
+    """
+    date1 = UFO['datetime']
+    datetm1= datetime.datetime.strptime(date1, '%Y-%m-%d %H:%M:%S')
+    date = datetm1.date()
+    entry = om.get(map, date)
+    if entry is None:
+        dateentry = newDataEntry(UFO)
+        om.put(map, date, dateentry)
+    else:
+        dateentry = me.getValue(entry)
+        addCityIndex(dateentry, UFO)
+    return map
+
+
+
 
 def updateDurationIndex(map, UFO):
     """
@@ -138,7 +166,7 @@ def indexHeight(analyzer):
     """
     Altura del arbol
     """
-    return om.height(analyzer['cityIndex'])
+    return om.height(analyzer)
 
 
 def indexSize(analyzer):
@@ -152,14 +180,31 @@ def minKey(analyzer):
     """
     Llave mas pequena
     """
-    return om.minKey(analyzer['cityIndex'])
+    return om.minKey(analyzer)
 
 
 def maxKey(analyzer):
     """
     Llave mas grande
     """
-    return om.maxKey(analyzer['cityIndex'])
+    return om.maxKey(analyzer)
+
+def searchByDateRange(cont, fecha1, fecha2):
+
+    datetm1 = datetime.datetime.strptime(fecha1, '%Y-%m-%d')
+    date1 = datetm1.date()
+    datetm2 = datetime.datetime.strptime(fecha2, '%Y-%m-%d')
+    date2 = datetm2.date()
+    values = om.values(cont, date1, date2)
+    counter = 0
+    lstEntry = lt.newList('ARRAY_LIST')
+    for lstvalues in lt.iterator(values):
+        counter += lstvalues['count']
+        for event in lt.iterator(lstvalues['lstUFOs']):
+            lt.addLast(lstEntry,event)
+
+    return counter, lstEntry
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
@@ -185,7 +230,7 @@ def compareCities(city1, city2):
     else:
         return -1
 
-def compareTimes(duration1, duration2):
+def compareDurations(duration1, duration2):
     """
     Compara dos ciudades
     """
@@ -199,4 +244,25 @@ def compareTimes(duration1, duration2):
     else:
         return -1
 
+def compareDates(date1, date2):
+    """
+    Compara dos ciudades
+    """
+
+    if (date1 == date2):
+        return 0
+    elif date1 > date2:
+        return 1
+    else:
+        return -1
+
 # Funciones de ordenamiento
+
+date1 = '2003-03-29 22:30:00'
+processDate1= datetime.datetime.strptime(date1, '%Y-%m-%d %H:%M:%S')
+date2 = '2005-03-29 22:30:00'
+processDate2= datetime.datetime.strptime(date2, '%Y-%m-%d %H:%M:%S')
+
+res = processDate1.date() > processDate2.date()
+
+print(res)

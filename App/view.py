@@ -75,13 +75,32 @@ while True:
 
     elif int(inputs[0]) == 3:
         print('Se econtraron ' + str(controller.indexSize(cont['cityIndex'])) + ' ciudades con avistamientos')
-        print('Menor Llave: ' + str(controller.minKey(cont)))
-        print('Mayor Llave: ' + str(controller.maxKey(cont)))
+        print('Menor Llave: ' + str(controller.minKey(cont['cityIndex'])))
+        print('Mayor Llave: ' + str(controller.maxKey(cont['cityIndex'])))
 
     elif int(inputs[0]) == 4:
         print('Elementos en el arbol: ' + str(controller.indexSize(cont['durationIndex'])))
-        print('Menor Llave: ' + str(controller.minKey(cont)))
-        print('Mayor Llave: ' + str(controller.maxKey(cont)))
+        print('Menor Llave: ' + str(controller.minKey(cont['durationIndex'])))
+        print('Mayor Llave: ' + str(controller.maxKey(cont['durationIndex'])))
+
+    elif int(inputs[0]) == 5:
+        print('Elementos en el arbol: ' + str(controller.indexSize(cont['durationIndex'])))
+        print('Menor Llave: ' + str(controller.minKey(cont['durationIndex'])))
+        print('Mayor Llave: ' + str(controller.maxKey(cont['durationIndex'])))
+
+    elif int(inputs[0]) == 6:
+        fecha1 = input('Fecha minima de busqueda (AAAA-MM-DD) : ')
+        fecha2 = input('Fecha maxima de busqueda (AAAA-MM-DD) : ')
+        print('\nSe encontraron ' + str(controller.indexSize(cont['dateIndex'])) + ' avistamientos con distintas fechas')
+        print('Menor Llave: ' + str(controller.minKey(cont['dateIndex'])))
+        print('Mayor Llave: ' + str(controller.maxKey(cont['dateIndex'])))
+        result = controller.searchByDateRange(cont['dateIndex'], fecha1, fecha2)
+
+        print('\nSe encontraron ' + str(result[0]) + ' avistamientos en el rango')
+        print('\nPimeros 3 avistamientos:')
+        controller.printFirst3(result[1])
+        print('\nUltimos 3 avistamientos:')
+        controller.printLast3(result[1])
 
 
     else:

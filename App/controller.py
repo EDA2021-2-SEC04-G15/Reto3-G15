@@ -91,6 +91,31 @@ def printLastTotals(analyzer):
         k-=1
     pass
 
+def printFirst3(list):
+    i=1
+    while i in range (1,4):
+        avistamiento = lt.getElement(list,i)
+        print('\n###########\nFecha: ' + avistamiento['datetime'] +
+            ", Ciudad: " + avistamiento['city'] +
+            ', Pais: ' + avistamiento['country']+
+            ', Forma: '+ avistamiento['shape']+
+            ', Duracion(segundos): '+avistamiento['duration (seconds)'])
+        i+=1
+    pass
+
+def printLast3(list):
+    totals = int(lt.size(list))
+    k = totals
+    while k in range (totals-2, totals+1):
+        avistamiento = lt.getElement(list,k)
+        print('\n###########\nFecha: ' + avistamiento['datetime'] +
+            ", Ciudad: " + avistamiento['city'] +
+            ', Pais: ' + avistamiento['country']+
+            ', Forma: '+ avistamiento['shape']+
+            ', Duracion(segundos): '+avistamiento['duration (seconds)'])
+        k-=1
+    pass
+
 def indexHeight(analyzer):
     """
     Altura del indice (arbol)
@@ -117,3 +142,9 @@ def maxKey(analyzer):
     La mayor llave del arbol
     """
     return model.maxKey(analyzer)
+
+def searchByDateRange(cont, fecha1, fecha2):
+
+    result = model.searchByDateRange(cont, fecha1, fecha2)
+
+    return result
